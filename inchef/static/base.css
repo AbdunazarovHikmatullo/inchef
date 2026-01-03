@@ -1,0 +1,125 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+:root{
+    --neytral-50: 0 0% 98%;
+    --neytral-100: 0 0% 96.1%;
+    --neytral-200: 0 0% 89.8%;
+    --neytral-300: 0 0% 83.1%;
+    --neytral-400: 0 0% 63.9%;
+    --neytral-500: 0 0% 45.1%;
+    --neytral-600: 0 0% 32.2%;
+    --neytral-700: 0 0% 25.1%;
+    --neytral-800: 0 0% 14.9%;
+    --neytral-900: 0 0% 9%;
+    --neytral-950: 0 0% 3.9%;
+
+    --text-color: hsl(var(--neytral-900));
+    --text-color-foreground: hsl(var(--neytral-50));
+    --text-color-muted: hsl(var(--neytral-200));
+    --text-color-secondary: hsl(var(--neytral-600));
+    --text-color-tertiary: hsl(var(--neytral-400));
+
+
+    --bg-color: hsl(var(--neytral-100));
+    --bg-color-foreground: hsl(var(--neytral-900));
+
+    --card-color: hsl(var(--neytral-200));
+    --card-color-foreground: hsl(var(--neytral-800));
+    --card-color-muted: hsl(var(--neytral-400));
+    --card-color-secondary: hsl(var(--neytral-800));
+
+    --border-color: hsl(var(--neytral-300));
+    --text-color-purple: #fd46fa;
+}
+
+
+body{
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+
+}
+
+header{
+    background-color: var(--card-color-foreground);
+    color: var(--text-color-foreground);
+    padding: 10px;
+}
+
+.container{
+    margin: 0 auto;
+    max-width: 1300px;
+}
+
+.text-title{
+    font-size: 2em;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+header .text-title{
+    color: var(--text-color-foreground);
+}
+
+header nav{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--text-color-purple);
+    color: var(--text-color-foreground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 15px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.user-avatar:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+
+.flex {
+    display: flex;
+}
+.justify-between{
+    justify-content: space-between;
+}
+.items-center{
+    align-items: center;
+}
+
+.link{
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.text-muted{
+    color: var(--text-color-muted);
+}
+.text-foreground{
+    color: var(--text-color-foreground);
+}
+.text-color{
+    color: var(--text-color);
+}
+.text-purple{
+    color: var(--text-color-purple);
+}
+.ml-10{
+    margin-left: 15px;
+}
+

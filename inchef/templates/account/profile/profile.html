@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'account/css/profile.css' %}">
+{% endblock head %}
+
+{% block content %}
+<section class="profile">
+    <div class="container profile-card">
+        <h1 class="profile-title">Профиль</h1>
+
+        <div class="profile-row">
+            <span class="label">Имя пользователя</span>
+            <span class="value">{{ request.user.username }}</span>
+        </div>
+
+        <div class="profile-row">
+            <span class="label">Email</span>
+            <span class="value">{{ request.user.email }}</span>
+        </div>
+
+        <div class="profile-row">
+            <span class="label">Телефон</span>
+            <span class="value">{{ request.user.phone_number }}</span>
+        </div>
+
+        <div class="profile-row">
+            <span class="label">Роль</span>
+            <span class="value">{{ request.user.get_role_display }}</span>
+        </div>
+
+        <a href="{% url 'logout' %}" class="profile-logout">
+            Выйти
+        </a>
+    </div>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+{% endblock scripts %}

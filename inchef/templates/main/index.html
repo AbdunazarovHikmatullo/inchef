@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/index.css' %}">
+{% endblock head %}
+
+{% block content %}
+<section class="banner">
+    <div class="container banner-inner">
+        <div class="banner-text">
+            <h1 class="banner-title">
+                Домашняя еда<br>
+                Покупай домашнюю еду
+            </h1>
+            <p class="banner-subtitle">
+                Натурально. Вкусно. С любовью.
+            </p>
+            <a href="#" class="banner-btn">Смотреть каталог</a>
+        </div>
+
+        <div class="banner-grid">
+    <div class="banner-image">
+        <img src="{% static 'main/img/plow.jpg' %}" alt="">
+    </div>
+    <div class="banner-image">
+        <img src="{% static 'main/img/plow.jpg' %}" alt="">
+    </div>
+    <div class="banner-image">
+        <img src="{% static 'main/img/plow.jpg' %}" alt="">
+    </div>
+    <div class="banner-image">
+        <img src="{% static 'main/img/plow.jpg' %}" alt="">
+    </div>
+</div>
+
+    </div>
+</section>
+{% endblock content %}
