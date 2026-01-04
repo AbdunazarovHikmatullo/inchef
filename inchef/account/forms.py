@@ -17,8 +17,6 @@ class RegisterForm(UserCreationForm):
             'email',
             'phone_number',
             'role',
-            'password1',
-            'password2',
         )
 
     def clean_phone_number(self):

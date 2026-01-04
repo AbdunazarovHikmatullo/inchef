@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 
 from .forms import RegisterForm, LoginForm
+from .models import User
 
 
 def register_view(request):
@@ -49,4 +50,10 @@ def logout_view(request):
 
 
 def profile_view(request, username):
-    return render(request, 'account/profile/profile.html')
+    profile_user = get_object_or_404(User, username=username)
+    products = profile_user.products.filter(is_active=True).select_related('category')
+    
+    return render(request, 'account/profile/profile.html', {
+        'profile_user': profile_user,
+        'products': products
+    })

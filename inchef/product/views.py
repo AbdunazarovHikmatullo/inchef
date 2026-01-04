@@ -1,6 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, Avg
+from django.contrib.auth.decorators import login_required
 from .models import Product, Category
+from .forms import ProductForm, ProductImageFormSet
 
 
 def products(request):
@@ -74,6 +76,50 @@ def product_detail(request, pk):
 
 
 
+@login_required
 def create_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        formset = ProductImageFormSet(request.POST, request.FILES)
+        
+        if form.is_valid() and formset.is_valid():
+            product = form.save(commit=False)
+            product.owner = request.user
+            product.save()
+            
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.product = product
+                instance.save()
+            formset.save_m2m()
+            
+            return redirect('product_detail', pk=product.pk)
+    else:
+        form = ProductForm()
+        formset = ProductImageFormSet()
+
+@login_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
     
-    return render(request, 'product/create_product.html')
+    # Проверка прав доступа: только владелец может редактировать
+    if request.user != product.owner:
+        return redirect('product_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        formset = ProductImageFormSet(request.POST, request.FILES, instance=product)
+        
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect('product_detail', pk=product.pk)
+    else:
+        form = ProductForm(instance=product)
+        formset = ProductImageFormSet(instance=product)
+
+    return render(request, 'product/edit_product.html', {
+        'form': form,
+        'formset': formset,
+        'product': product
+    })
