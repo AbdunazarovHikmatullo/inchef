@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'product/css/product.css' %}" />
+{% endblock head %}
+
+{% block content %}
+<div class="catalog-container">
+    <!-- Header -->
+    <div class="catalog-header">
+        <h1 class="catalog-title">Каталог блюд</h1>
+        <p class="catalog-subtitle">Вкусные домашние блюда от талантливых поваров</p>
+    </div>
+
+
+
+    <!-- Main Content -->
+    <div class="catalog-main">
+        <!-- Sidebar with Categories -->
+        <aside class="categories-sidebar">
+            <h3 class="sidebar-title">Категории</h3>
+            <ul class="category-list">
+                <li class="category-item">
+                    <a href="{% url 'products' %}" class="category-link {% if not active_category %}active{% endif %}">
+                        Все блюда
+                    </a>
+                </li>
+                {% for category in categories %}
+                <li class="category-item">
+                    <a href="?category={{ category.slug }}"
+                        class="category-link {% if active_category == category.slug %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <!-- Products Grid -->
+        <div class="products-grid">
+            {% if products %}
+            {% for product in products %}
+            <a href="{% url 'product_detail' product.pk %}" class="product-card">
+                <div class="product-image-container">
+                    {% with product.images.first as img %}
+                    {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ product.title }}" class="product-image">
+                    {% else %}
+                    <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="product-image">
+                    {% endif %}
+                    {% endwith %}
+                    {% if product.created_at|timesince < "7 дней" %} <span class="product-badge">Новинка</span>
+                        {% endif %}
+                </div>
+
+                <div class="product-info">
+                    <div class="product-category">{{ product.category.name }}</div>
+                    <h3 class="product-title">{{ product.title }}</h3>
+                    <p class="product-description">{{ product.description|truncatewords:15 }}</p>
+
+                    <div class="product-footer">
+                        <span class="product-price">{{ product.price }}c</span>
+                        {% if product.reviews.count > 0 %}
+                        <div class="product-rating">
+                            <span class="star-icon">★</span>
+                            <span>{{ product.average_rating|default:"—" }}</span>
+                            <span class="rating-count">({{ product.reviews.count }})</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🍽️</div>
+                <h2 class="empty-title">Блюд не найдено</h2>
+                <p class="empty-text">
+                    {% if search_query %}
+                    По запросу "{{ search_query }}" ничего не найдено. Попробуйте изменить параметры поиска.
+                    {% else %}
+                    В данной категории пока нет блюд.
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'product/js/product.js' %}"></script>
+{% endblock scripts %}

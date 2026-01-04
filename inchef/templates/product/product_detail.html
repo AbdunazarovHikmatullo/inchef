@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'product/css/product.css' %}" />
+{% endblock head %}
+
+{% block content %}
+<div class="detail-container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="{% url 'products' %}">Каталог</a> /
+        <a href="?category={{ product.category.slug }}">{{ product.category.name }}</a> /
+        {{ product.title }}
+    </div>
+
+    <!-- Main Product Section -->
+    <div class="product-detail-grid">
+        <!-- Image Gallery -->
+        <div class="gallery-container">
+            <div class="main-image-container">
+                {% with product.images.first as main_img %}
+                {% if main_img %}
+                <img src="{{ main_img.image.url }}" alt="{{ product.title }}" class="main-image" id="mainImage">
+                {% else %}
+                <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="main-image" id="mainImage">
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            {% if images.count > 1 %}
+            <div class="thumbnail-grid">
+                {% for image in images %}
+                <img src="{{ image.image.url }}" alt="{{ product.title }}"
+                    class="thumbnail {% if forloop.first %}active{% endif %}" onclick="changeMainImage(this)">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-detail-info">
+            <h1 class="detail-title">{{ product.title }}</h1>
+
+            <!-- Rating -->
+            <div class="rating-section">
+                {% if average_rating %}
+                <div class="rating-stars">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= average_rating %} <span>★</span>
+                        {% else %}
+                        <span style="color: #ddd;">★</span>
+                        {% endif %}
+                        {% endfor %}
+                </div>
+                <span class="rating-text">{{ average_rating }} из 5 ({{ reviews_count }} отзывов)</span>
+                {% else %}
+                <span class="rating-text">Пока нет отзывов</span>
+                {% endif %}
+            </div>
+
+            <!-- Price -->
+            <div class="detail-price">{{ product.price }}c</div>
+
+            <!-- Description -->
+            <div class="detail-description">
+                {{ product.description|linebreaks }}
+            </div>
+
+            <!-- Chef Info -->
+            <div class="chef-info">
+                <div class="chef-title">Повар</div>
+                <div class="chef-name">
+                    <a href="{% url 'profile' product.owner.username %}"
+                        style="color: var(--text-color); text-decoration: none;">
+                        👨‍🍳 {{ product.owner.username }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Add to Cart -->
+            {% if user.is_authenticated and user != product.owner %}
+            <div class="cart-section">
+                <form action="{% url 'add_to_cart' product.pk %}" method="post" id="addToCartForm">
+                    {% csrf_token %}
+                    <div class="quantity-selector">
+                        <label class="quantity-label">Количество:</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="qty-btn" onclick="decreaseQuantity()">-</button>
+                            <input type="number" name="quantity" value="1" min="1" max="10" class="qty-input"
+                                id="quantityInput" readonly>
+                            <button type="button" class="qty-btn" onclick="increaseQuantity()">+</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="add-to-cart-btn">
+                        🛒 Добавить в корзину
+                    </button>
+                </form>
+            </div>
+            {% elif not user.is_authenticated %}
+            <div class="cart-section">
+                <a href="{% url 'login' %}?next={{ request.path }}" class="add-to-cart-btn"
+                    style="display: block; text-align: center; text-decoration: none;">
+                    Войдите для заказа
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    {% if reviews %}
+    <div class="reviews-section">
+        <h2 class="section-title">Отзывы покупателей</h2>
+        {% for review in reviews %}
+        <div class="review-card">
+            <div class="review-header">
+                <span class="review-author">{{ review.author.username }}</span>
+                <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
+            </div>
+            <div class="review-rating">
+                {% for i in "12345" %}
+                {% if forloop.counter <= review.grade %} <span>★</span>
+                    {% else %}
+                    <span style="color: #ddd;">★</span>
+                    {% endif %}
+                    {% endfor %}
+            </div>
+            {% if review.text %}
+            <p class="review-text">{{ review.text }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="related-section">
+        <h2 class="section-title">Похожие блюда</h2>
+        <div class="related-grid">
+            {% for related in related_products %}
+            <a href="{% url 'product_detail' related.pk %}" class="product-card">
+                <div class="product-image-container">
+                    {% with related.images.first as img %}
+                    {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ related.title }}" class="product-image">
+                    {% else %}
+                    <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="product-image">
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="product-info">
+                    <div class="product-category">{{ related.category.name }}</div>
+                    <h3 class="product-title">{{ related.title }}</h3>
+                    <div class="product-footer">
+                        <span class="product-price">{{ related.price }} ₽</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'product/js/product.js' %}"></script>
+{% endblock scripts %}

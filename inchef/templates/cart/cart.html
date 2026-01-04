@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'cart/css/cart.css' %}" />
+{% endblock head %}
+
+{% block content %}
+<div class="cart-container">
+    <div class="cart-header">
+        <h1 class="cart-title">🛒 Корзина</h1>
+        <p class="cart-subtitle">Ваши выбранные блюда</p>
+    </div>
+
+    {% if items %}
+    <div class="cart-content">
+        <div class="cart-items">
+            {% for item in items %}
+            <div class="cart-item">
+                <div class="item-image">
+                    {% with item.product.images.first as img %}
+                    {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ item.product.title }}">
+                    {% else %}
+                    <div class="no-image">🍽️</div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div class="item-details">
+                    <h3 class="item-title">
+                        <a href="{% url 'product_detail' item.product.pk %}">{{ item.product.title }}</a>
+                    </h3>
+                    <p class="item-chef">Повар: {{ item.product.owner.username }}</p>
+                    <p class="item-price-single">{{ item.product.price }} ₽ за шт.</p>
+                </div>
+
+                <div class="item-quantity">
+                    <form action="{% url 'update_cart_item' item.id %}" method="post" class="quantity-form">
+                        {% csrf_token %}
+                        <div class="quantity-controls">
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}"
+                                class="qty-btn">−</button>
+                            <span class="qty-value">{{ item.quantity }}</span>
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}"
+                                class="qty-btn">+</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="item-total">
+                    <span class="total-price">{{ item.total_price }} ₽</span>
+                </div>
+
+                <form action="{% url 'remove_from_cart' item.id %}" method="post" class="remove-form">
+                    {% csrf_token %}
+                    <button type="submit" class="remove-btn" title="Удалить">✕</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-card">
+                <h3 class="summary-title">Итого</h3>
+
+                <div class="summary-row">
+                    <span>Товаров:</span>
+                    <span>{{ items.count }} шт.</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>К оплате:</span>
+                    <span class="summary-price">{{ total }} ₽</span>
+                </div>
+
+                <a href="#" class="checkout-btn" onclick="alert('Оформление заказа скоро будет доступно!')">
+                    Оформить заказ →
+                </a>
+
+                <form action="{% url 'clear_cart' %}" method="post" class="clear-form">
+                    {% csrf_token %}
+                    <button type="submit" class="clear-btn" onclick="return confirm('Очистить корзину?')">
+                        Очистить корзину
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <div class="empty-icon">🛒</div>
+        <h2 class="empty-title">Ваша корзина пуста</h2>
+        <p class="empty-text">Добавьте вкусные блюда из нашего каталога</p>
+        <a href="{% url 'products' %}" class="browse-btn">Перейти в каталог</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

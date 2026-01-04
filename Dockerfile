@@ -1,4 +1,11 @@
-FROM ubuntu:latest
-LABEL authors="hikmatullo"
+FROM python:3.12
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY /inchef .
+
+RUN python3 manage.py migrate
+
+RUN python3 manage.py runserver

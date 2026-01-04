@@ -2,38 +2,99 @@
 {% load static %}
 
 {% block head %}
-<link rel="stylesheet" href="{% static 'main/css/index.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/index.css' %}" type="text/css" />
 {% endblock head %}
 
 {% block content %}
-<section class="banner">
-    <div class="container banner-inner">
-        <div class="banner-text">
-            <h1 class="banner-title">
-                Домашняя еда<br>
-                Покупай домашнюю еду
-            </h1>
-            <p class="banner-subtitle">
-                Натурально. Вкусно. С любовью.
+<div class="container" style="max-width: 1300px; margin: 0 auto;">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Домашняя еда,<br>приготовленная с душой</h1>
+            <p class="hero-subtitle">
+                Найдите талантливых поваров поблизости или поделитесь своими кулинарными шедеврами.
+                InChef объединяет любителей вкусной и здоровой еды.
             </p>
-            <a href="#" class="banner-btn">Смотреть каталог</a>
+            <div class="hero-buttons">
+                <a href="{% url 'products' %}" class="cta-btn cta-primary">Заказать еду</a>
+                <a href="{% url 'create_product' %}" class="cta-btn cta-secondary">Стать поваром</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="feature-card">
+            <div class="feature-icon">🌿</div>
+            <h3 class="feature-title">Свежие продукты</h3>
+            <p class="feature-description">Наши повара используют только качественные и свежие ингредиенты для
+                приготовления блюд.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">👩‍🍳</div>
+            <h3 class="feature-title">Талантливые руки</h3>
+            <p class="feature-description">Каждое блюдо готовится индивидуально с любовью и вниманием к деталям.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🚀</div>
+            <h3 class="feature-title">Быстрый заказ</h3>
+            <p class="feature-description">Удобная система заказа и прямой контакт с поваром для уточнения деталей.</p>
+        </div>
+    </section>
+
+    <!-- Latest Products Section -->
+    <section class="latest-section">
+        <div class="section-header">
+            <h2 class="section-title">Новинки в меню</h2>
+            <a href="{% url 'products' %}" class="view-all-link">Смотреть все →</a>
         </div>
 
-        <div class="banner-grid">
-    <div class="banner-image">
-        <img src="{% static 'main/img/plow.jpg' %}" alt="">
-    </div>
-    <div class="banner-image">
-        <img src="{% static 'main/img/plow.jpg' %}" alt="">
-    </div>
-    <div class="banner-image">
-        <img src="{% static 'main/img/plow.jpg' %}" alt="">
-    </div>
-    <div class="banner-image">
-        <img src="{% static 'main/img/plow.jpg' %}" alt="">
-    </div>
-</div>
+        {% if latest_products %}
+        <div class="products-grid">
+            {% for product in latest_products %}
+            <a href="{% url 'product_detail' product.pk %}" class="product-card">
+                <div class="card-image-wrapper">
+                    {% with product.images.first as img %}
+                    {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ product.title }}" class="card-image">
+                    {% else %}
+                    <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="card-image">
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="card-content">
+                    <div class="card-category">{{ product.category.name }}</div>
+                    <h3 class="card-title">{{ product.title }}</h3>
+                    <div class="card-footer">
+                        <span class="card-price">{{ product.price }}c</span>
+                        {% if product.reviews.exists %}
+                        <div class="card-rating">
+                            <span>★</span> {{ product.average_rating|default:"5.0" }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state" style="text-align: center; padding: 40px; color: #888;">
+            <p>Пока нет добавленных блюд. Станьте первым!</p>
+        </div>
+        {% endif %}
+    </section>
 
-    </div>
-</section>
+    <!-- Become a Chef CTA -->
+    <section class="cta-footer">
+        <h2 class="cta-footer-title">Любите готовить?</h2>
+        <p class="cta-footer-text">
+            Присоединяйтесь к сообществу InChef, делитесь своими блюдами и зарабатывайте на своем таланте.
+            Мы поможем вам найти благодарных клиентов.
+        </p>
+        <a href="{% url 'create_product' %}" class="cta-btn cta-primary" style="background: white; color: black;">Начать
+            продавать</a>
+    </section>
+
+</div>
 {% endblock content %}
