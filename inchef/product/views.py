@@ -98,6 +98,11 @@ def create_product(request):
         form = ProductForm()
         formset = ProductImageFormSet()
 
+    return render(request, 'product/create_product.html', {
+        'form': form,
+        'formset': formset
+    })
+
 @login_required
 def edit_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
