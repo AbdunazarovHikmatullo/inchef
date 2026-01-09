@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Заказ принят | inChef{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="success-card">
+        <div class="success-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        <h1>Заказ успешно оформлен!</h1>
+        <p>Ваш заказ был разделен по поварам и отправлен им на подтверждение. Вы можете следить за статусом в личном
+            кабинете.</p>
+
+        <div class="actions">
+            <a href="{% url 'products' %}" class="btn-primary">Вернуться в каталог</a>
+            <a href="{% url 'profile' request.user.username %}" class="btn-secondary">В личный кабинет</a>
+        </div>
+    </div>
+</main>
+
+<style>
+    .success-card {
+        max-width: 600px;
+        margin: 60px auto;
+        background: white;
+        padding: 50px;
+        border-radius: 30px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .success-icon {
+        color: #10b981;
+        margin-bottom: 25px;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: #1a1a1a;
+    }
+
+    p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 40px;
+    }
+
+    .actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 25px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #fd46fa 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

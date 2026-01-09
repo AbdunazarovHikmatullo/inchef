@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Оформление заказа | inChef{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="checkout-container">
+        <h1>Оформление заказа</h1>
+
+        <div class="checkout-grid">
+            <div class="checkout-form-section">
+                <h2>Детали доставки</h2>
+                <form method="post" class="modern-form">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="{{ form.customer_phone.id_for_label }}">Телефон для связи</label>
+                        {{ form.customer_phone }}
+                        {% if form.customer_phone.errors %}
+                        <div class="error-message">{{ form.customer_phone.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.delivery_address.id_for_label }}">Адрес доставки</label>
+                        {{ form.delivery_address }}
+                        {% if form.delivery_address.errors %}
+                        <div class="error-message">{{ form.delivery_address.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.notes.id_for_label }}">Комментарий к заказу</label>
+                        {{ form.notes }}
+                    </div>
+
+                    <button type="submit" class="btn-submit">Подтвердить заказ</button>
+                </form>
+            </div>
+
+            <div class="order-summary-section">
+                <h2>Ваш заказ</h2>
+                <div class="order-items-list">
+                    {% for item in cart.items.all %}
+                    <div class="summary-item">
+                        <div class="item-info">
+                            <span class="item-title">{{ item.product.title }}</span>
+                            <span class="item-details">{{ item.quantity }} x {{ item.product.price }}с</span>
+                        </div>
+                        <span class="item-total-price">{{ item.total_price }}с</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="order-total-row">
+                    <span>Итого к оплате:</span>
+                    <span class="total-amount">{{ cart.total_price }}с</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+    .checkout-container {
+        max-width: 1000px;
+        margin: 40px auto;
+    }
+
+    .checkout-container h1 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 40px;
+    }
+
+    .checkout-form-section,
+    .order-summary-section {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+        margin-bottom: 25px;
+        font-size: 1.5rem;
+        color: #1a1a1a;
+    }
+
+    /* Reuse form styles */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+        font-family: inherit;
+    }
+
+    input:focus,
+    textarea:focus {
+        border-color: #a855f7;
+        outline: none;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #fd46fa 0%, #a855f7 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Summary Styles */
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .item-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .item-title {
+        font-weight: 600;
+    }
+
+    .item-details {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .item-total-price {
+        font-weight: 700;
+    }
+
+    .order-total-row {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        font-weight: 800;
+    }
+
+    .total-amount {
+        color: #a855f7;
+    }
+
+    @media (max-width: 768px) {
+        .checkout-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .order-summary-section {
+            order: -1;
+        }
+
+        /* Summary first on mobile */
+    }
+</style>
+{% endblock %}
